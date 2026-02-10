@@ -1,24 +1,41 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { SpaceTheme } from '@/constants/theme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
+const LaunchLensTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: SpaceTheme.background,
+    card: SpaceTheme.card,
+    border: SpaceTheme.border,
+    primary: SpaceTheme.accent,
+    text: SpaceTheme.text,
+  },
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+    <ThemeProvider value={LaunchLensTheme}>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: SpaceTheme.background },
+          headerTintColor: SpaceTheme.text,
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen
+          name="details/[id]"
+          options={{
+            title: 'Launch Details',
+            headerBackTitle: 'Back',
+          }}
+        />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </ThemeProvider>
   );
 }
