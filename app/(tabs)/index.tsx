@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const isInitialMount = useRef(true);
 
   const loadLaunches = useCallback(async (query = '') => {
     try {
@@ -40,10 +41,11 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    loadLaunches();
-  }, [loadLaunches]);
-
-  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      loadLaunches();
+      return;
+    }
     const timer = setTimeout(() => {
       setLoading(true);
       loadLaunches(searchQuery);
